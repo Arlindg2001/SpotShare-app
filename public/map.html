@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { margin: 0; padding: 0; }
+  html, body, #map { width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+let map, markers = [];
+
+function initMap() {
+  const params = new URLSearchParams(window.location.search);
+  const lat = parseFloat(params.get('lat')) || 40.758;
+  const lng = parseFloat(params.get('lng')) || -73.9855;
+
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat, lng },
+    zoom: 14,
+    disableDefaultUI: true,
+    zoomControl: true,
+    gestureHandling: 'greedy',
+  });
+}
+
+// Parent page calls this to update markers
+window.setMarkers = function(listings) {
+  // Clear old
+  markers.forEach(m => m.setMap(null));
+  markers = [];
+
+  listings.forEach(function(listing) {
+    var marker = new google.maps.Marker({
+      map: map,
+      position: { lat: listing.latitude, lng: listing.longitude },
+      title: listing.title,
+      label: {
+        text: '$' + Math.round(listing.price_per_hour / 100),
+        color: '#0a9166',
+        fontWeight: 'bold',
+        fontSize: '13px',
+      },
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        fillColor: 'white',
+        fillOpacity: 1,
+        strokeColor: '#0a9166',
+        strokeWeight: 2,
+        scale: 20,
+        labelOrigin: new google.maps.Point(0, 0),
+      },
+    });
+
+    marker.addListener('click', function() {
+      // Send selected listing back to parent
+      window.parent.postMessage({ type: 'marker-click', listing: listing }, '*');
+    });
+
+    markers.push(marker);
+  });
+
+  // Fit bounds if multiple
+  if (listings.length > 1) {
+    var bounds = new google.maps.LatLngBounds();
+    listings.forEach(function(l) { bounds.extend({ lat: l.latitude, lng: l.longitude }); });
+    map.fitBounds(bounds, 60);
+  }
+};
+
+// Parent calls this to re-center
+window.setCenter = function(lat, lng) {
+  if (map) map.setCenter({ lat: lat, lng: lng });
+};
+</script>
+<script>
+  var params = new URLSearchParams(window.location.search);
+  var key = params.get('key');
+  var s = document.createElement('script');
+  s.src = 'https://maps.googleapis.com/maps/api/js?key=' + key + '&callback=initMap';
+  s.async = true;
+  document.head.appendChild(s);
+</script>
+</body>
+</html>

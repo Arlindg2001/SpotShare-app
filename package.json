@@ -1,0 +1,31 @@
+{
+  "name": "spotshare-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@googlemaps/js-api-loader": "^2.0.2",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.98.0",
+    "@tailwindcss/postcss": "^4.2.1",
+    "@types/node": "^25.3.3",
+    "@types/react": "^19.2.14",
+    "autoprefixer": "^10.4.27",
+    "lucide-react": "^0.575.0",
+    "next": "^14.2.35",
+    "postcss": "^8.5.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^4.2.1",
+    "typescript": "^5.9.3"
+  }
+}
